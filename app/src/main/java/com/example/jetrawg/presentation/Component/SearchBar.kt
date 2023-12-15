@@ -1,6 +1,7 @@
 package com.example.jetrawg.presentation.Component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 fun Searchbar(
     value: String,
     onValueChange: (String) -> Unit = {},
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -47,6 +49,7 @@ fun Searchbar(
                     imageVector = Icons.Default.Search,
                     contentDescription = "search",
                     modifier = Modifier
+                        .clickable { onClick() }
                 )
             },
             placeholder = { Text(text = "Search...") },

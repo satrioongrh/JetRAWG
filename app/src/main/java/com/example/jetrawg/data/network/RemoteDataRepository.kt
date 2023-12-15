@@ -2,8 +2,10 @@ package com.example.jetrawg.data.network
 
 import com.example.jetrawg.data.network.api.ApiService
 import com.example.jetrawg.data.network.api.Resource
-import com.example.jetrawg.data.network.model.GameDetailResponse
+import com.example.jetrawg.data.network.model.GameDetails
 import com.example.jetrawg.data.network.model.GamesResponse
+import com.example.jetrawg.data.network.model.SearchResponse
+import com.example.jetrawg.utils.toGameDetails
 import javax.inject.Inject
 
 class RemoteDataRepository @Inject constructor(private val apiService: ApiService) {
@@ -17,11 +19,20 @@ class RemoteDataRepository @Inject constructor(private val apiService: ApiServic
         }
     }
 
-    suspend fun getGameDetails(id: Int): Resource<GameDetailResponse> {
+    suspend fun getGameDetails(id: Int): Resource<GameDetails> {
         try {
-            val response = apiService.getGameDetails(id)
+            val response = apiService.getGameDetails(id).toGameDetails()
             return Resource.Success(response)
         } catch (e: Exception) {
+            return Resource.Error(e.toString())
+        }
+    }
+
+    suspend fun doSearchGame(query: String) : Resource<SearchResponse>{
+        try {
+            val response = apiService.doSearchGame(query)
+            return Resource.Success(response)
+        }catch (e: Exception){
             return Resource.Error(e.toString())
         }
     }

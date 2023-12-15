@@ -1,14 +1,20 @@
 package com.example.jetrawg.di
 
+import android.content.Context
+import androidx.room.Room
+import com.example.jetrawg.data.local.db.GamesDao
+import com.example.jetrawg.data.local.db.GamesDatabase
 import com.example.jetrawg.data.network.api.ApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -39,4 +45,18 @@ object DataModule {
             .build()
         return retrofit.create(ApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): GamesDatabase {
+        return Room.databaseBuilder(
+            context,
+            GamesDatabase::class.java,
+            "game_db")
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFavoritesDao(gameDb: GamesDatabase) : GamesDao = gameDb.gamesDao()
 }

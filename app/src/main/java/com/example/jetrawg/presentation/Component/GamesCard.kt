@@ -26,10 +26,51 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.example.jetrawg.data.network.model.GameDetails
 import com.example.jetrawg.data.network.model.ResultsItem
 
 @Composable
 fun GamesCard(game: ResultsItem, onCLick: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+            .clickable { onCLick() }
+    ) {
+        Row {
+            Image(
+                painter = rememberAsyncImagePainter(model = game.backgroundImage),
+                contentDescription = game.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(100.dp)
+                    .padding(8.dp)
+                    .clip(shape = RoundedCornerShape(8.dp))
+            )
+            Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.Start) {
+                Text(
+                    text = game.name ?: "No Name",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.padding(top = 7.dp)
+                )
+                Text(
+                    text = "Release date ${game.released} ",
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+                Row (verticalAlignment = Alignment.CenterVertically) {
+                    Icon(imageVector = Icons.Default.Star, contentDescription = null, tint = Color(0xFFfca103))
+                    Spacer(modifier = Modifier.width(3.dp))
+                    Text(text = game.rating.toString(), modifier = Modifier.padding(top = 4.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun GamesCardFavorite(game: GameDetails, onCLick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth()
             .clickable { onCLick() }

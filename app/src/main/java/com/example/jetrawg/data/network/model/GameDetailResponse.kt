@@ -2,6 +2,7 @@ package com.example.jetrawg.data.network.model
 
 import com.google.gson.annotations.SerializedName
 
+//@Entity(tableName = "favorite")
 data class GameDetailResponse(
 
 	@field:SerializedName("added")
@@ -14,7 +15,7 @@ data class GameDetailResponse(
 	val nameOriginal: String? = null,
 
 	@field:SerializedName("rating")
-	val rating: Any? = null,
+	val rating: Double? = null,
 
 	@field:SerializedName("game_series_count")
 	val gameSeriesCount: Int? = null,
@@ -37,6 +38,7 @@ data class GameDetailResponse(
 	@field:SerializedName("achievements_count")
 	val achievementsCount: Int? = null,
 
+//	@PrimaryKey(autoGenerate = false)
 	@field:SerializedName("id")
 	val id: Int? = null,
 
@@ -65,7 +67,7 @@ data class GameDetailResponse(
 	val descriptionRaw: String? = null,
 
 	@field:SerializedName("tags")
-	val tags: List<TagsItem?>? = null,
+	val tags: List<TagsItem>? = null,
 
 	@field:SerializedName("background_image")
 	val backgroundImage: String? = null,

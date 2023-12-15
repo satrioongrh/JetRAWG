@@ -31,6 +31,8 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val homeState = homeViewModel.games.value
+    val searchState = homeViewModel.search.value
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,42 +42,74 @@ fun HomeScreen(
             mutableStateOf("")
         }
 
-        Searchbar(value = searchBarText, onValueChange = {})
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            when {
-                homeState.isLoading -> {
-                    item {
-                        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                            CircularProgressIndicator(
+        Searchbar(
+            value = searchBarText,
+            onValueChange = { searchBarText = it },
+            onClick = { homeViewModel.doSearchGames(searchBarText) })
+        if (searchState.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(CenterHorizontally)
+            )
+        } else if (searchState.error.isNotEmpty()) {
+            Text(
+                text = "Error: ${searchState.error}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+        } else if (searchState.data != null) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(searchState.data!!.results ?: emptyList()) {
+                    GamesCard(game = it!!, onCLick = {
+                        navHostController.currentBackStackEntry?.savedStateHandle?.set(
+                            "gameId",
+                            it.id
+                        )
+                        navHostController.navigate(Screen.Detail.route)
+                    })
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+        } else {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                when {
+                    homeState.isLoading -> {
+                        item {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .align(CenterHorizontally)
+                                )
+                            }
+                        }
+                    }
+
+                    homeState.error.isNotEmpty() -> {
+                        item {
+                            Text(
+                                text = "Error: ${homeState.error}",
                                 modifier = Modifier
-                                    .align(CenterHorizontally)
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
                             )
                         }
                     }
-                }
 
-                homeState.error.isNotEmpty() -> {
-                    item {
-                        // Menampilkan pesan error jika ada
-                        Text(
-                            text = "Error: ${homeState.error}",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        )
-                    }
-                }
-
-                homeState.data != null -> {
-                    items(homeState.data!!.results ?: emptyList()) {
-                        GamesCard(game = it!!, onCLick = {
-                            navHostController.currentBackStackEntry?.savedStateHandle?.set(
-                                "gameId",
-                                it.id
-                            )
-                            navHostController.navigate(Screen.Detail.route)
-                        })
-                        Spacer(modifier = Modifier.height(16.dp))
+                    homeState.data != null -> {
+                        items(homeState.data!!.results ?: emptyList()) {
+                            GamesCard(game = it!!, onCLick = {
+                                navHostController.currentBackStackEntry?.savedStateHandle?.set(
+                                    "gameId",
+                                    it.id
+                                )
+                                navHostController.navigate(Screen.Detail.route)
+                            })
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
             }

@@ -19,6 +19,9 @@ class HomeViewModel @Inject constructor(
     private val _games = mutableStateOf<HomeState>(HomeState())
     val games: State<HomeState> = _games
 
+    private val _search = mutableStateOf<SearchState>(SearchState())
+    val search: State<SearchState> = _search
+
     init {
         getGames()
     }
@@ -33,6 +36,22 @@ class HomeViewModel @Inject constructor(
                 }
                 is Resource.Error -> {
                     _games.value = HomeState(error = gamesResult.error)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun doSearchGames(query: String) {
+        _search.value = SearchState(isLoading = true)
+        viewModelScope.launch (Dispatchers.IO) {
+            val gamesResult = remoteDataRepository.doSearchGame(query)
+            when (gamesResult){
+                is Resource.Success -> {
+                    _search.value = SearchState(data = gamesResult.data)
+                }
+                is Resource.Error -> {
+                    _search.value = SearchState(error = gamesResult.error)
                 }
                 else -> {}
             }

@@ -95,4 +95,10 @@ dependencies {
 
     //coil
     implementation ("io.coil-kt:coil-compose:2.4.0")
+
+    //room
+    implementation ("androidx.room:room-runtime:2.4.2")
+    kapt ("androidx.room:room-compiler:2.4.2")
+    implementation ("androidx.room:room-ktx:2.4.2")
+    implementation("androidx.room:room-paging:2.5.0-alpha01")
 }

@@ -2,6 +2,7 @@ package com.example.jetrawg.data.network.model
 
 import com.google.gson.annotations.SerializedName
 
+
 data class GamesResponse(
 
 	@field:SerializedName("next")
